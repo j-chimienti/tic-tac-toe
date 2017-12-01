@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import './App.css';
-import {Button, Modal} from "react-bootstrap";
-
+import {Modal_ as Modal} from "./Modal";
+import {GameHistory} from "./GameHistory";
+import {Board} from "./Board";
 
 const initState = {
 
-    board: '.........'.split(''),
+    board: '.'.repeat(9).split(''),
     playerPiece: null,
     computerPiece: null,
     turn: null,
@@ -15,6 +16,7 @@ const initState = {
         tie: 0,
     },
     __alert__: null,
+    winningCombo: null,
 };
 
 class App extends Component {
@@ -27,25 +29,96 @@ class App extends Component {
         super();
 
         this.choosePiece = this.choosePiece.bind(this);
-        this.checkWinningCombinations = this.checkWinningCombinations.bind(this);
+        this.checkForPotentialWinningCombinations = this.checkForPotentialWinningCombinations.bind(this);
         this.handlePlaceUserPiece = this.handlePlaceUserPiece.bind(this);
         this.placeComputerPiece = this.placeComputerPiece.bind(this);
         this.isGameOver = this.isGameOver.bind(this);
-        this.getHistory = this.getHistory.bind(this);
+        this.fetchGameHistory = this.fetchGameHistory.bind(this);
         this.saveGameResult = this.saveGameResult.bind(this);
+        this.verifyWinningCombo = this.verifyWinningCombo.bind(this);
     }
 
     componentDidMount() {
 
-        const history = this.getHistory();
+        const history = this.fetchGameHistory();
 
         this.setState({
-            ...this.state,
             history
         });
     }
 
-    getHistory() {
+    verifyWinningCombo(piece) {
+
+        const {board, computerPiece} = this.state;
+
+        const pieces = piece.repeat(3);
+
+        let winningCombo = null;
+
+        checkDiagionals(piece);
+        checkHorizontal(piece);
+        checkVertical(piece);
+
+        this.setState({
+            winningCombo,
+        });
+
+        return winningCombo;
+
+
+        function checkHorizontal() {
+
+
+            if (board[0] + board[1] + board[2] === pieces) {
+
+                winningCombo = [0, 1, 2];
+
+                return true;
+            } else if (board[3] + board[4] + board[5] === pieces) {
+
+                winningCombo = [3, 4, 5];
+
+                return true;
+            } else if (board[6] + board[7] + board[8] === pieces) {
+
+                winningCombo = [6, 7, 8];
+
+                return true;
+            }
+
+
+        }
+
+        function checkVertical() {
+
+            if (board[0] + board[3] + board[6] === pieces) {
+                winningCombo = [0, 3, 6];
+            } else if (board[1] + board[4] + board[7] === pieces) {
+                winningCombo = [1, 4, 7];
+            } else if (board[2] + board[5] + board[8] === pieces) {
+                winningCombo = [2, 5, 8];
+            }
+
+
+        }
+
+
+        function checkDiagionals() {
+
+
+            if (board[0] + board[4] + board[8] === pieces) {
+                winningCombo = [0, 4, 8];
+            } else if (board[2] + board[4] + board[6] === pieces) {
+                winningCombo = [2, 4, 6];
+            }
+
+
+        }
+
+
+    }
+
+    fetchGameHistory() {
 
 
         try {
@@ -72,117 +145,164 @@ class App extends Component {
 
     }
 
-    saveGameResult(result = 'tie') {
+    resetGame(result) {
 
 
         const {playerPiece, computerPiece} = this.state;
 
-        const history = this.getHistory();
+        const turn = 'player';
 
-        const turn = result === 'loss' ? 'computer' : 'player';
+        this.saveGameResult(result);
 
+        alert(result);
 
-        history[result] += 1;
-
-        localStorage.setItem('gameData', JSON.stringify(history));
 
         this.setState({
+            ...this.state,
             ...initState,
             playerPiece,
             computerPiece,
             turn,
             __alert__: turn === 'computer' ? 'computer will go first' : 'go first',
-            history,
+        }, () => {
+
+            setTimeout(() => this.setState({__alert__: null}), 1000);
         });
 
 
-        setTimeout(() => this.setState({__alert__: null}, () => {
+    }
 
-            turn === 'computer' ? this.placeComputerPiece() : null;
-        }), 1000);
+    saveGameResult(result = 'tie') {
+
+
+        try {
+
+
+            const history = this.fetchGameHistory();
+
+            history[result] += 1;
+
+            localStorage.setItem('gameData', JSON.stringify(history));
+
+        } catch (e) {
+
+            console.log('error saving data');
+        }
+
+
     }
 
     isGameOver(piece) {
 
-        const {turn} = this.state;
-
-        const won = this.checkWinningCombinations(piece);
 
         let result = null;
 
-        if (won) {
+        const winningCombo = this.verifyWinningCombo(piece);
 
-            alert(`${piece} won`);
+        if (winningCombo) {
 
-            result = piece === this.state.playerPiece ? 'win' : 'loss';
-        } else {
-
-            const tie = this.state.board.every(b => b !== '.');
-
-            if (tie) {
-
-                alert('tie');
-
-                result = 'tie';
-            }
-        }
-
-        if (result) {
-
-
-            this.saveGameResult(result);
-
-            return true;
+            return result = piece === this.state.playerPiece ? 'win' : 'loss';
 
         }
 
+        const tie = this.state.board.every(b => b !== '.');
 
-        const nextTurn = turn === 'computer' ? 'player' : 'computer';
+        if (tie) {
 
-        this.setState({turn: nextTurn});
+            result = 'tie';
+        }
 
-        return false;
+
+        return result;
+
     }
 
-    checkWinningCombinations(piece) {
+    checkForPotentialWinningCombinations(piece = this.state.computerPiece) {
 
         const {board} = this.state;
 
-        const pieces = piece.repeat(3);
+        let winningPiece = null;
 
+        checkHorz();
+        checkVert();
+        checkDiag();
 
-        return checkDiagionals(piece) || checkHorizontal(piece) || checkVertical(piece);
+        return winningPiece;
 
-        function checkHorizontal(piece) {
+        function checkHorz() {
+            const rows = [];
 
+            for (let i = 0; i <= 6; i += 3) {
 
-            return board[0] + board[1] + board[2] === pieces ||
+                rows.push([{item: board[i], index: i}, {item: board[i + 1], index: i + 1}, {
+                    item: board[i + 2],
+                    index: i + 2
+                }]);
+            }
 
-                board[3] + board[4] + board[5] === pieces ||
-                board[6] + board[7] + board[8] === pieces
+            return checker(rows);
+
+        }
+
+        function checkVert() {
+
+            const rows = [];
+
+            for (let i = 0; i <= 2; i++) {
+
+                rows.push([{item: board[i], index: i}, {item: board[i + 3], index: i + 3}, {
+                    item: board[i + 6],
+                    index: i + 6
+                }]);
+            }
+
+            return checker(rows);
 
 
         }
 
-        function checkVertical(piece) {
 
-            return board[0] + board[3] + board[6] === pieces ||
+        function checkDiag() {
 
-                board[1] + board[4] + board[7] === pieces ||
-                board[2] + board[5] + board[8] === pieces
+            const rows = [
+                [{item: board[0], index: 0}, {item: board[4], index: 4}, {item: board[8], index: 8}],
+                [{item: board[2], index: 2}, {item: board[4], index: 4}, {item: board[6], index: 6}],
+            ];
+
+
+            return checker(rows);
 
 
         }
 
+        function checker(rows) {
 
-        function checkDiagionals(piece) {
+            return rows.find(row => {
+
+                const empty = [];
+
+                const pieces = [];
+
+                row.forEach((cell) => {
+                    if (cell.item === '.') {
+
+                        empty.push(cell)
+
+                    } else if (cell.item === piece) {
+
+                        pieces.push(cell);
+
+                    }
+                });
 
 
-            return board[0] + board[4] + board[8] === pieces ||
+                if (empty.length === 1 && pieces.length === 2) {
 
-                board[2] + board[4] + board[6] === pieces;
+                    winningPiece = empty[0];
 
-
+                    return true;
+                }
+            })
         }
 
 
@@ -191,7 +311,7 @@ class App extends Component {
 
     choosePiece(piece) {
 
-        const turn = piece === 'O' ? 'player' : 'computer';
+        const turn = 'player';
 
         const computerPiece = piece === 'O' ? 'X' : 'O';
 
@@ -218,7 +338,13 @@ class App extends Component {
     handlePlaceUserPiece(idx) {
 
 
-        const {board, playerPiece} = this.state;
+        const {board, playerPiece, turn} = this.state;
+
+
+        if (turn !== 'player') {
+
+            return false;
+        }
 
         if (board[+idx] !== '.') {
 
@@ -234,34 +360,73 @@ class App extends Component {
 
         this.setState({
             board: newBoard,
+            turn: 'computer',
         }, () => {
-            const isGameOver = this.isGameOver(playerPiece);
 
-            if (!isGameOver) {
+            const result = this.isGameOver(playerPiece);
+            if (result) {
 
-                this.placeComputerPiece();
+                this.resetGame(result);
 
             }
+            else this.placeComputerPiece();
         });
 
 
     }
 
+
     placeComputerPiece() {
 
-        const {board, computerPiece} = this.state;
+        const {board, computerPiece, playerPiece} = this.state;
 
         const board_ = board.slice();
 
-        const empty = board_.findIndex(b => b === '.');
+
+        const winPiece = this.checkForPotentialWinningCombinations(computerPiece);
 
 
-        board_[empty] = computerPiece;
+        if (winPiece) {
+
+            // alert(JSON.stringify(winPiece, null, 4));
+
+            board_[winPiece.index] = computerPiece;
+        }
+
+        else {
+
+            const blockPiece = this.checkForPotentialWinningCombinations(playerPiece);
+
+            if (blockPiece) {
+
+                // alert(JSON.stringify(blockPiece, null, 4));
+
+                board_[blockPiece.index] = computerPiece;
+
+            } else {
+
+                const preferredPlays = [4, 0, 2, 6, 8, 1, 3, 5, 7];
+
+                const empty = preferredPlays.find(index => board_[index] === '.');
+
+                board_[empty] = computerPiece;
+            }
+
+        }
 
 
         this.setState({board: board_}, () => {
 
-            this.isGameOver(computerPiece);
+            const result = this.isGameOver(computerPiece);
+            if (result) {
+
+                this.resetGame(result);
+
+
+            } else {
+
+                this.setState({turn: 'player'});
+            }
 
         });
 
@@ -272,94 +437,33 @@ class App extends Component {
     render() {
 
 
-        const {__alert__, playerPiece, board, turn, history: {win, loss, tie}} = this.state;
-
-        const cells = board.map((cell, idx) => {
-
-            return (
-                <div
-
-                    className={'cell_inner'}
-                    key={cell + idx}
-                    onClick={() => turn === 'player' && this.handlePlaceUserPiece(idx)}
-                >
-
-                    {cell === '.' ? '' : cell === 'O' ? <i className={'fa fa-circle-o'}></i> :
-                        <i className={'fa fa-times'}></i>}
-                </div>
-            )
-        });
-
-        const rows = [];
-
-        for (let i = 0; i <= cells.length - 1; i += 3) {
-
-            rows.push(
-                <div
-                    key={i + 'row'}
-                    className={'row'}>
-                    <div
-                        className={'col-xs-4 cell'}> {cells[i]}</div
-                    >
-                    <div
-                        className={'col-xs-4 cell'}> {cells[i + 1]}</div
-                    >
-                    <div
-                        className={'col-xs-4 cell'}> {cells[i + 2]}</div
-                    >
-                </div>
-            )
-
-        }
+        const {__alert__, playerPiece, board, turn, winningCombo, history: {win, loss, tie}} = this.state;
 
 
         return (
             <div className={'container'}>
-                <div className={'row'}>
 
+                <Modal
+                    show={!playerPiece}
+                    choosePiece={this.choosePiece}
+                />
+                <div className={'row'}>
                     {__alert__}
                 </div>
 
-                <Modal
-                    show={!playerPiece}>
 
-                    <Modal.Header>
-                        Choose Piece
-                    </Modal.Header>
+                <Board
+                    winningCombo={winningCombo}
+                    turn={turn}
+                    board={board}
+                    handlePlaceUserPiece={this.handlePlaceUserPiece}
+                />
 
-                    <Button onClick={() => this.choosePiece('O')}
-                            bsStyle={'primary'}
-                    >
-                        <i className={'fa fa-circle-o'}></i>
-                    </Button>
-
-                    <Button onClick={() => this.choosePiece('X')}
-                            bsStyle="primary">
-                        <i className={'fa fa-times'}></i>
-                    </Button>
-
-                </Modal>
-
-                <div className={'row'}>
-                    <div className={'col-sm-8 col-md-6 col-lg-4 col-sm-offset-2 col-md-offset-3 col-lg-offset-4'}>
-                        {rows}
-
-                    </div>
-                </div>
-
-                <div className={'row'}>
-                    <div className={'col-xs-3 text-capitalize'}>win</div>
-                    <div className={'col-xs-9'}> {win}</div>
-                </div>
-                <div className={'row'}>
-                    <div className={'col-xs-3 text-capitalize'}>loss</div>
-                    <div className={'col-xs-9'}> {loss}</div>
-                </div>
-                <div className={'row'}>
-                    <div className={'col-xs-3 text-capitalize'}>tie</div>
-                    <div className={'col-xs-9'}> {tie}</div>
-                </div>
-
+                <GameHistory
+                    win={win}
+                    loss={loss}
+                    tie={tie}
+                />
 
             </div>
         );
