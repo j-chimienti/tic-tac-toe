@@ -1,4 +1,5 @@
 import React from 'react';
+import {Col, Grid, Row} from "react-bootstrap";
 
 
 export function Board({board, handlePlaceUserPiece, turn}) {
@@ -24,31 +25,24 @@ export function Board({board, handlePlaceUserPiece, turn}) {
     for (let i = 0; i <= cells.length - 1; i += 3) {
 
         BOARD.push(
-            <div
-                key={i + 'row'}
-                className={'row'}>
-                <div
-                    className={'col-xs-4 cell'}> {cells[i]}</div
-                >
-                <div
-                    className={'col-xs-4 cell'}> {cells[i + 1]}</div
-                >
-                <div
-                    className={'col-xs-4 cell'}> {cells[i + 2]}</div
-                >
-            </div>
+            <Row>
+
+                <Col xs={4} className={'cell'}>{cells[i]}</Col>
+                <Col xs={4} className={'cell'}>{cells[i + 1]}</Col>
+                <Col xs={4} className={'cell'}>{cells[i + 2]}</Col>
+            </Row>
         )
 
     }
 
     return (
-        <div className={'row'}>
-            <div
-                className={'col-xs-10 col-sm-8 col-md-6 col-lg-4 col-xs-offset-1 col-sm-offset-2 col-md-offset-3 col-lg-offset-4'}>
-                {BOARD}
 
-            </div>
-        </div>
+        <Grid>
+            <Col xs={10} sm={8} md={6} xl={4}>
+                {BOARD}
+            </Col>
+        </Grid>
+
     )
 
 }

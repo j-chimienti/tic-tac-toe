@@ -3,6 +3,7 @@ import './App.css';
 import {Modal_ as Modal} from "./Modal";
 import {GameHistory} from "./GameHistory";
 import {Board} from "./Board";
+import {Alert, Col, Grid, Row} from "react-bootstrap";
 
 const initState = {
 
@@ -154,8 +155,7 @@ class App extends Component {
 
         const history = this.saveGameResult(result);
 
-        alert(result);
-
+        const resultText = result === 'win' ? 'You won!' : result === 'tie' ? 'You tied' : 'You lost';
 
         this.setState({
             ...this.state,
@@ -164,10 +164,13 @@ class App extends Component {
             playerPiece,
             computerPiece,
             turn,
-            __alert__: turn === 'computer' ? 'computer will go first' : 'go first',
+            __alert__: resultText,
         }, () => {
 
-            setTimeout(() => this.setState({__alert__: null}), 1000);
+
+            setTimeout(() => this.setState({__alert__: turn === 'computer' ? 'computer will go first' : 'go first'}), 2000);
+
+            setTimeout(() => this.setState({__alert__: null}), 4000);
         });
 
 
@@ -436,31 +439,48 @@ class App extends Component {
 
 
         return (
-            <div className={'container'}>
+            <Grid>
 
                 <Modal
                     show={!playerPiece}
                     choosePiece={this.choosePiece}
                 />
-                <div className={'row'}>
-                    {__alert__}
-                </div>
+                <Row>
 
 
-                <Board
-                    winningCombo={winningCombo}
-                    turn={turn}
-                    board={board}
-                    handlePlaceUserPiece={this.handlePlaceUserPiece}
-                />
+                    <Col sm={9}>
 
-                <GameHistory
-                    win={win}
-                    loss={loss}
-                    tie={tie}
-                />
+                        <Board
+                            winningCombo={winningCombo}
+                            turn={turn}
+                            board={board}
+                            handlePlaceUserPiece={this.handlePlaceUserPiece}
+                        />
+                    </Col>
 
-            </div>
+                    <Col sm={3}>
+                        <Row>
+                            {__alert__ && <Alert
+                                bsStyle="info"
+
+                            >
+                                {__alert__}
+                            </Alert>}
+                        </Row>
+
+                        <Row>
+                            <GameHistory
+                                win={win}
+                                loss={loss}
+                                tie={tie}
+                            />
+                        </Row>
+                    </Col>
+
+                </Row>
+
+
+            </Grid>
         );
     }
 }
