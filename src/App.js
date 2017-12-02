@@ -152,7 +152,7 @@ class App extends Component {
 
         const turn = 'player';
 
-        this.saveGameResult(result);
+        const history = this.saveGameResult(result);
 
         alert(result);
 
@@ -160,6 +160,7 @@ class App extends Component {
         this.setState({
             ...this.state,
             ...initState,
+            history,
             playerPiece,
             computerPiece,
             turn,
@@ -175,19 +176,13 @@ class App extends Component {
     saveGameResult(result = 'tie') {
 
 
-        try {
+        const history = this.fetchGameHistory();
 
+        history[result] += 1;
 
-            const history = this.fetchGameHistory();
+        localStorage.setItem('gameData', JSON.stringify(history));
 
-            history[result] += 1;
-
-            localStorage.setItem('gameData', JSON.stringify(history));
-
-        } catch (e) {
-
-            console.log('error saving data');
-        }
+        return history;
 
 
     }
