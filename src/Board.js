@@ -38,7 +38,7 @@ export function Board({board, handlePlaceUserPiece, turn}) {
     return (
 
         <Grid>
-            <Col xs={10} sm={8} md={6} xl={4}>
+            <Col xs={11} sm={8} md={6} xl={4}>
                 {BOARD}
             </Col>
         </Grid>
