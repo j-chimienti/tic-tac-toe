@@ -41,10 +41,8 @@ class App extends Component {
 
     componentDidMount() {
 
-        const history = this.fetchGameHistory();
-
         this.setState({
-            history
+            history: this.fetchGameHistory()
         });
     }
 
@@ -151,24 +149,18 @@ class App extends Component {
 
         const {playerPiece, computerPiece} = this.state;
 
-        const turn = 'player';
-
-        const history = this.saveGameResult(result);
-
-        const resultText = result === 'win' ? 'You won!' : result === 'tie' ? 'You tied' : 'You lost';
-
         this.setState({
             ...this.state,
             ...initState,
-            history,
+            history: this.saveGameResult(result),
             playerPiece,
             computerPiece,
-            turn,
-            __alert__: resultText,
+            turn: 'player',
+            __alert__:result === 'win' ? 'You won!' : result === 'tie' ? 'You tied' : 'You lost',
         }, () => {
 
 
-            setTimeout(() => this.setState({__alert__: turn === 'computer' ? 'computer will go first' : 'go first'}), 2000);
+            setTimeout(() => this.setState({__alert__: 'go first'}), 2000);
 
             setTimeout(() => this.setState({__alert__: null}), 4000);
         });
@@ -207,7 +199,7 @@ class App extends Component {
 
         if (tie) {
 
-            result = 'tie';
+            return result = 'tie';
         }
 
 
@@ -344,7 +336,9 @@ class App extends Component {
             return false;
         }
 
-        if (board[+idx] !== '.') {
+        // if cell is not empty, do not place
+
+        if (!(board[+idx] === '.')) {
 
             alert('spot taken');
 
@@ -398,7 +392,6 @@ class App extends Component {
             if (blockPiece) {
 
                 // alert(JSON.stringify(blockPiece, null, 4));
-
                 board_[blockPiece.index] = computerPiece;
 
             } else {

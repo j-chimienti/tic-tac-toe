@@ -26,7 +26,6 @@ export function Board({board, handlePlaceUserPiece, turn}) {
 
         BOARD.push(
             <Row>
-
                 <Col xs={4} className={'cell'}>{cells[i]}</Col>
                 <Col xs={4} className={'cell'}>{cells[i + 1]}</Col>
                 <Col xs={4} className={'cell'}>{cells[i + 2]}</Col>
