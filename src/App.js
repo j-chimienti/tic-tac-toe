@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
-import {Modal_ as Modal} from "./Modal";
+import {ChooseWeapon} from "./ChooseWeapon";
 import {GameHistory} from "./GameHistory";
 import {Board} from "./Board";
 import {Alert, Col, Grid, Row} from "react-bootstrap";
@@ -224,13 +224,14 @@ class App extends Component {
 
             for (let i = 0; i <= 6; i += 3) {
 
-                rows.push([{item: board[i], index: i}, {item: board[i + 1], index: i + 1}, {
+                rows.push([
+                    {item: board[i], index: i}, {item: board[i + 1], index: i + 1}, {
                     item: board[i + 2],
                     index: i + 2
                 }]);
             }
 
-            return checker(rows);
+            return check_for_winning_piece(rows);
 
         }
 
@@ -246,7 +247,7 @@ class App extends Component {
                 }]);
             }
 
-            return checker(rows);
+            return check_for_winning_piece(rows);
 
 
         }
@@ -260,12 +261,12 @@ class App extends Component {
             ];
 
 
-            return checker(rows);
+            return check_for_winning_piece(rows);
 
 
         }
 
-        function checker(rows) {
+        function check_for_winning_piece(rows) {
 
             return rows.find(row => {
 
@@ -434,12 +435,11 @@ class App extends Component {
         return (
             <Grid>
 
-                <Modal
+                <ChooseWeapon
                     show={!playerPiece}
                     choosePiece={this.choosePiece}
                 />
                 <Row>
-
 
                     <Col sm={9}>
 

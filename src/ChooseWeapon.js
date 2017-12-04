@@ -3,7 +3,7 @@ import React from 'react';
 import {Button, Col, Modal, Row} from "react-bootstrap";
 
 
-export function Modal_({choosePiece, show}) {
+export function ChooseWeapon({choosePiece, show}) {
 
     return (
         <Modal
