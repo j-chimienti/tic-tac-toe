@@ -1,25 +1,31 @@
 import React from 'react';
-import {Col, Grid, Panel, Row} from "react-bootstrap";
 
 
 export function GameHistory({win, loss, tie}) {
 
     return (
-        <Panel>
-            <Row>
-                <Col xs={3}>Win</Col>
-                <Col xs={9} className={'text-center'}>{win}</Col>
-            </Row>
-            <Row>
-                <Col xs={3}>Losses</Col>
-                <Col xs={9} className={'text-center'}>
-                    <p>{loss}</p>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={3}>Tie</Col>
-                <Col xs={9} className={'text-center'}>{tie}</Col>
-            </Row>
-        </Panel>
+        <div className={'my-3 mx-auto gameHistory'}>
+            <table className={'table'}>
+                <thead>
+
+                <tr>
+
+                    <td className={'text-right'}>Win</td>
+                    <td className={'text-right'}>Losses</td>
+                    <td className={'text-right'}>Tie</td>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr>
+                    <td className={'text-right'}>{win}</td>
+                    <td className={'text-right'}>
+                        <p>{loss}</p>
+                    </td>
+                    <td className={'text-right'}>{tie}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     )
 }

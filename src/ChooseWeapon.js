@@ -1,37 +1,60 @@
 import React from 'react';
 
-import {Button, Col, Modal, Row} from "react-bootstrap";
+
+export class ChooseWeapon extends React.Component {
+
+    constructor(props) {
+        super();
+    }
+
+    componentDidMount() {
+        window.$('#chooseWeaponModal').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false,
+            focus: true,
+        });
+    }
+
+    handleChoosePiece(choice) {
+
+        window.$('#chooseWeaponModal').modal('hide');
+        this.props.choosePiece(choice);
+
+    }
+
+    render() {
+
+        return (
+
+            <div className="modal fade" id={'chooseWeaponModal'} tabIndex="-1" role="dialog">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Choose Weapon</h5>
+                        </div>
+                        <div className="modal-body">
+                            <div className={'px-1 row d-flex justify-content-center align-items-center'}>
+                                <button className={'btn btn-info btn-block'} onClick={() => this.handleChoosePiece('O')}
+                                >
+                                    <i className="far fa-circle fa-2x ">
+
+                                    </i>
+                                </button>
+
+                                <button className={'btn btn-danger btn-block'} onClick={() => this.handleChoosePiece('X')}
+                                >
+                                    <i className={'fa fa-times fa-2x'}>
+
+                                    </i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
-export function ChooseWeapon({choosePiece, show}) {
-
-    return (
-        <Modal
-            show={show}>
-
-            <Modal.Header className={'text-center'}>
-                <h3>Choose Weapon</h3>
-            </Modal.Header>
-
-            <Modal.Body className={'text-center'}>
-                <Row>
-                    <Col xs={6}>
-                        <Button onClick={() => choosePiece('O')}
-                                bsStyle={'primary btn-block'}
-                        >
-                            <i className={'fa fa-circle-o fa-2x'}></i>
-                        </Button>
-
-                    </Col>
-                    <Col xs={6}>
-                        <Button onClick={() => choosePiece('X')}
-                                bsStyle="danger btn-block">
-                            <i className={'fa fa-times fa-2x'}></i>
-                        </Button>
-                    </Col>
-                </Row>
-            </Modal.Body>
-
-        </Modal>
-    )
+        )
+    }
 }

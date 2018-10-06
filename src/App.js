@@ -2,22 +2,21 @@ import React, {Component} from 'react';
 import './App.css';
 import {ChooseWeapon} from "./ChooseWeapon";
 import {GameHistory} from "./GameHistory";
-import {Board} from "./Board";
-import {Alert, Col, Grid, Row} from "react-bootstrap";
+import TicTacToeBoard from "./TicTacToeBoard";
 
 const initState = {
 
     board: '.'.repeat(9).split(''),
-    playerPiece: null,
-    computerPiece: null,
-    turn: null,
+    playerPiece: '',
+    computerPiece: '',
+    turn: '',
     history: {
         win: 0,
         loss: 0,
         tie: 0,
     },
-    __alert__: null,
-    winningCombo: null,
+    __alert__: '',
+    winningCombo: [],
 };
 
 class App extends Component {
@@ -34,25 +33,23 @@ class App extends Component {
         this.handlePlaceUserPiece = this.handlePlaceUserPiece.bind(this);
         this.placeComputerPiece = this.placeComputerPiece.bind(this);
         this.isGameOver = this.isGameOver.bind(this);
-        this.fetchGameHistory = this.fetchGameHistory.bind(this);
-        this.saveGameResult = this.saveGameResult.bind(this);
         this.verifyWinningCombo = this.verifyWinningCombo.bind(this);
     }
 
     componentDidMount() {
 
         this.setState({
-            history: this.fetchGameHistory()
+            history: App.fetchGameHistory()
         });
     }
 
     verifyWinningCombo(piece) {
 
-        const {board, computerPiece} = this.state;
+        const {board} = this.state;
 
         const pieces = piece.repeat(3);
 
-        let winningCombo = null;
+        let winningCombo = [];
 
         checkDiagionals(piece);
         checkHorizontal(piece);
@@ -117,7 +114,7 @@ class App extends Component {
 
     }
 
-    fetchGameHistory() {
+    static fetchGameHistory() {
 
 
         try {
@@ -144,34 +141,44 @@ class App extends Component {
 
     }
 
-    resetGame(result) {
-
+    resetGame(result, winningCombo) {
 
         const {playerPiece, computerPiece} = this.state;
 
+        const history = App.saveGameResult(result);
+
         this.setState({
-            ...this.state,
-            ...initState,
-            history: this.saveGameResult(result),
-            playerPiece,
-            computerPiece,
-            turn: 'player',
-            __alert__:result === 'win' ? 'You won!' : result === 'tie' ? 'You tied' : 'You lost',
+            winningCombo,
+            history,
+            __alert__: result === 'win' ? 'You won!' : result === 'tie' ? 'You tied' : 'You lost',
         }, () => {
+            setTimeout(() => {
+
+                this.setState({
+                    ...this.state,
+                    ...initState,
+                    history,
+                    playerPiece,
+                    computerPiece,
+                    turn: 'player',
+
+                }, () => {
 
 
-            setTimeout(() => this.setState({__alert__: 'go first'}), 2000);
+                    setTimeout(() => this.setState({__alert__: 'go first'}), 10);
 
-            setTimeout(() => this.setState({__alert__: null}), 4000);
-        });
+                    setTimeout(() => this.setState({__alert__: null}), 4000);
+                });
+            }, 2000);
+        })
 
 
     }
 
-    saveGameResult(result = 'tie') {
+    static saveGameResult(result = 'tie') {
 
 
-        const history = this.fetchGameHistory();
+        const history = App.fetchGameHistory();
 
         history[result] += 1;
 
@@ -189,9 +196,9 @@ class App extends Component {
 
         const winningCombo = this.verifyWinningCombo(piece);
 
-        if (winningCombo) {
+        if (winningCombo.length) {
 
-            return result = piece === this.state.playerPiece ? 'win' : 'loss';
+            result = piece === this.state.playerPiece ? 'win' : 'loss';
 
         }
 
@@ -199,11 +206,14 @@ class App extends Component {
 
         if (tie) {
 
-            return result = 'tie';
+            result = 'tie';
         }
 
 
-        return result;
+        return {
+            result,
+            winningCombo,
+        }
 
     }
 
@@ -226,9 +236,9 @@ class App extends Component {
 
                 rows.push([
                     {item: board[i], index: i}, {item: board[i + 1], index: i + 1}, {
-                    item: board[i + 2],
-                    index: i + 2
-                }]);
+                        item: board[i + 2],
+                        index: i + 2
+                    }]);
             }
 
             return check_for_winning_piece(rows);
@@ -341,7 +351,10 @@ class App extends Component {
 
         if (!(board[+idx] === '.')) {
 
-            alert('spot taken');
+            this.setState({__alert__: 'spot taken'}, () => {
+
+                setTimeout(() => this.setState({__alert__: null}), 3000);
+            });
 
             return;
         }
@@ -356,10 +369,10 @@ class App extends Component {
             turn: 'computer',
         }, () => {
 
-            const result = this.isGameOver(playerPiece);
+            const {result, winningCombo} = this.isGameOver(playerPiece);
             if (result) {
 
-                this.resetGame(result);
+                this.resetGame(result, winningCombo);
 
             }
             else this.placeComputerPiece();
@@ -409,10 +422,10 @@ class App extends Component {
 
         this.setState({board: board_}, () => {
 
-            const result = this.isGameOver(computerPiece);
+            const {result, winningCombo} = this.isGameOver(computerPiece);
             if (result) {
 
-                this.resetGame(result);
+                this.resetGame(result, winningCombo);
 
 
             } else {
@@ -433,47 +446,31 @@ class App extends Component {
 
 
         return (
-            <Grid>
 
+            <div className={'app bg-light'}>
                 <ChooseWeapon
                     show={!playerPiece}
                     choosePiece={this.choosePiece}
                 />
-                <Row>
+                <TicTacToeBoard
+                    turn={turn}
+                    board={board}
+                    winningCombo={winningCombo}
+                    handlePlaceUserPiece={this.handlePlaceUserPiece}
+                />
 
-                    <Col sm={9}>
+                <GameHistory
+                    win={win}
+                    loss={loss}
+                    tie={tie}
+                />
 
-                        <Board
-                            winningCombo={winningCombo}
-                            turn={turn}
-                            board={board}
-                            handlePlaceUserPiece={this.handlePlaceUserPiece}
-                        />
-                    </Col>
-
-                    <Col sm={3}>
-                        <Row>
-                            {__alert__ && <Alert
-                                bsStyle="info"
-
-                            >
-                                {__alert__}
-                            </Alert>}
-                        </Row>
-
-                        <Row>
-                            <GameHistory
-                                win={win}
-                                loss={loss}
-                                tie={tie}
-                            />
-                        </Row>
-                    </Col>
-
-                </Row>
-
-
-            </Grid>
+                <div className={'row row-alerts'}>
+                    {__alert__ && <div className={'alert alert-info w-100'}>
+                        {__alert__}
+                    </div>}
+                </div>
+            </div>
         );
     }
 }

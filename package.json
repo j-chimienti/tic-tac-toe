@@ -1,14 +1,12 @@
 {
   "name": "tic-tac-toe",
   "version": "0.2.0",
-  "private": true,
+  "private": false,
   "dependencies": {
-    "bootstrap": "^3.3.7",
-    "bootswatch": "^3.3.7",
-    "font-awesome": "^4.7.0",
-    "lodash": "^4.17.4",
+    "bootstrap": "^4.1.3",
+    "jquery": "3.3.1",
+    "popper.js": "1.14.3",
     "react": "^16.2.0",
-    "react-bootstrap": "^0.31.5",
     "react-dom": "^16.2.0"
   },
   "devDependencies": {
@@ -23,5 +21,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "homepage": "https://jchimienti89.github.io/tic-tac-toe"
+  "homepage": "https://j-chimienti.github.io/tic-tac-toe"
 }

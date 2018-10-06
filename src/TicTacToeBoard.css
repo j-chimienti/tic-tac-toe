@@ -1,0 +1,27 @@
+
+.board {
+    width: 300px;
+}
+
+.cell {
+
+    width: 100px;
+    height: 100px;
+    background: #9A8297;
+    transition: background-color .2s linear;
+    cursor: pointer;
+    border: 1px solid white;
+    font-size: 4rem;
+
+}
+
+.cell:hover {
+
+    background: #D0782A;
+}
+
+.cell.cell-winner {
+
+    background: white;
+    color: black;
+}

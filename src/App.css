@@ -1,25 +1,33 @@
-.cell {
-    padding-top: 33%;
-    background: whitesmoke;
+@import url(~bootstrap/dist/css/bootstrap.min.css);
 
+html, body, .app {
+
+    width: 100vw;
+    height: 100vh;
+    background: var(--light);
 }
 
-.cell_inner {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    top: 10px;
-    left: 10px;
-    bottom: 10px;
-    right: 10px;
-    background: #9A8297;
-    border-radius: 8px;
-    font-size: 7rem;
-    cursor: pointer;
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
-.cell_inner:hover {
+th {
+    font-weight: 600;
+    text-transform: capitalize;
+}
 
-    background: #D0782A;
+
+
+.gameHistory {
+
+    width: 300px;
+}
+
+.row-alerts {
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
