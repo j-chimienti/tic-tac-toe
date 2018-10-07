@@ -7,21 +7,30 @@
 
     width: 100px;
     height: 100px;
-    background: #9A8297;
-    transition: background-color .2s linear;
     cursor: pointer;
-    border: 1px solid white;
     font-size: 4rem;
-
+    transition: all .07s ease, scale .2s linear;
+    border: .2rem solid var(--gray);
 }
 
 .cell:hover {
-
-    background: #D0782A;
+    transform: scale(1.05);
 }
 
 .cell.cell-winner {
 
-    background: white;
-    color: black;
+    color: var(--green);
+}
+
+
+@media all and (min-width: 1199px) {
+
+    .board {
+        width: calc(150px * 3);
+    }
+
+    .cell {
+        width: 150px;
+        height: 150px;
+    }
 }

@@ -4,7 +4,7 @@ html, body, .app {
 
     width: 100vw;
     height: 100vh;
-    background: var(--light);
+    background-color: var(--light);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -17,7 +17,9 @@ th {
     text-transform: capitalize;
 }
 
-
+.text-mono {
+    font-family: var(--font-family-monospace);
+}
 
 .gameHistory {
 
@@ -26,8 +28,12 @@ th {
 
 .row-alerts {
 
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    height: 5rem;
+    text-align: center;
+    font-weight: 600;
+    text-transform: capitalize;
 }
+
+
+
+

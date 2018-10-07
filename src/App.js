@@ -447,29 +447,30 @@ class App extends Component {
 
         return (
 
-            <div className={'app bg-light'}>
+            <div className={'app'}>
                 <ChooseWeapon
                     show={!playerPiece}
                     choosePiece={this.choosePiece}
                 />
+                <div className={'row row-alerts'}>
+                    {__alert__ && <div className={'alert alert-info w-100'}>
+                        {__alert__}
+                    </div>
+                    }
+                </div>
                 <TicTacToeBoard
                     turn={turn}
                     board={board}
                     winningCombo={winningCombo}
                     handlePlaceUserPiece={this.handlePlaceUserPiece}
                 />
-
                 <GameHistory
                     win={win}
                     loss={loss}
                     tie={tie}
                 />
 
-                <div className={'row row-alerts'}>
-                    {__alert__ && <div className={'alert alert-info w-100'}>
-                        {__alert__}
-                    </div>}
-                </div>
+
             </div>
         );
     }

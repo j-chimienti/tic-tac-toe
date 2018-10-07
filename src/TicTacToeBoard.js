@@ -3,34 +3,32 @@ import PropTypes from 'prop-types';
 import './TicTacToeBoard.css';
 
 
-function mapToIcon(cell) {
+function mapToIcon(cell, winningCombo, idx) {
 
     let klass = '';
     if (cell === 'O') {
-        klass += 'far fa-circle'
+        klass += 'far fa-circle';
+
+        if (winningCombo.length && winningCombo.includes(idx)) {
+
+            klass += ' text-success';
+        }
+        else klass += ' text-info'
     } else if (cell === 'X') {
 
-        klass += 'fa fa-times'
-    }
+        klass += 'fa fa-times';
 
-    return klass;
-}
+        if (winningCombo.length && winningCombo.includes(idx)) {
 
-function mapToCell(idx, winningCombo) {
-
-    let klass = 'cell d-flex justify-content-center align-items-center';
-
-    if (winningCombo.length) {
-
-        if (winningCombo.includes(idx)) {
-
-            klass += ' cell-winner'
-
+            klass += ' text-success';
         }
+        else klass += ' text-danger'
 
     }
+
     return klass;
 }
+
 
 function TicTacToeBoard({turn = 'computer', board, handlePlaceUserPiece, winningCombo = []}) {
 
@@ -39,7 +37,7 @@ function TicTacToeBoard({turn = 'computer', board, handlePlaceUserPiece, winning
         return (
             <i
                 key={idx}
-                className={mapToIcon(cell)}
+                className={mapToIcon(cell, winningCombo, idx)}
             >
             </i>
         )
@@ -53,13 +51,13 @@ function TicTacToeBoard({turn = 'computer', board, handlePlaceUserPiece, winning
             <div className={'row'} key={i}>
                 <div
                     onClick={() => turn === 'player' && handlePlaceUserPiece(i)}
-                    className={mapToCell(i, winningCombo)}>{cells[i]}</div>
+                    className={'cell d-flex justify-content-center align-items-center'}>{cells[i]}</div>
                 <div
                     onClick={() => turn === 'player' && handlePlaceUserPiece(i + 1)}
-                    className={mapToCell(i + 1, winningCombo)}>{cells[i + 1]}</div>
+                    className={'cell d-flex justify-content-center align-items-center'}>{cells[i + 1]}</div>
                 <div
                     onClick={() => turn === 'player' && handlePlaceUserPiece(i + 2)}
-                    className={mapToCell(i + 2, winningCombo)}>{cells[i + 2]}</div>
+                    className={'cell d-flex justify-content-center align-items-center'}>{cells[i + 2]}</div>
             </div>
         )
 

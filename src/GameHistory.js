@@ -10,19 +10,17 @@ export function GameHistory({win, loss, tie}) {
 
                 <tr>
 
-                    <td className={'text-right'}>Win</td>
-                    <td className={'text-right'}>Losses</td>
-                    <td className={'text-right'}>Tie</td>
+                    <th className={'text-right'}>Wins</th>
+                    <th className={'text-right'}>Losses</th>
+                    <th className={'text-right'}>Ties</th>
                 </tr>
                 </thead>
                 <tbody>
 
                 <tr>
-                    <td className={'text-right'}>{win}</td>
-                    <td className={'text-right'}>
-                        <p>{loss}</p>
-                    </td>
-                    <td className={'text-right'}>{tie}</td>
+                    <td className={'text-right text-mono'}>{win}</td>
+                    <td className={'text-right text-mono'}>{loss}</td>
+                    <td className={'text-right text-mono'}>{tie}</td>
                 </tr>
                 </tbody>
             </table>
