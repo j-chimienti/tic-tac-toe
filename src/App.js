@@ -3,6 +3,7 @@ import './App.css';
 import {ChooseWeapon} from "./ChooseWeapon";
 import {GameHistory} from "./GameHistory";
 import TicTacToeBoard from "./TicTacToeBoard";
+import Notifications from "./Notifications";
 
 const initState = {
 
@@ -330,7 +331,7 @@ class App extends Component {
             }
 
 
-            setTimeout(() => this.setState({__alert__: null}), 1000);
+            setTimeout(() => this.setState({__alert__: null}), 1300);
         });
 
 
@@ -452,12 +453,11 @@ class App extends Component {
                     show={!playerPiece}
                     choosePiece={this.choosePiece}
                 />
-                <div className={'row row-alerts'}>
-                    {__alert__ && <div className={'alert alert-info w-100'}>
-                        {__alert__}
-                    </div>
-                    }
-                </div>
+
+                <Notifications
+                    notification={__alert__}
+                />
+
                 <TicTacToeBoard
                     turn={turn}
                     board={board}

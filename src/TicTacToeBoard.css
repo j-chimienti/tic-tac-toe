@@ -1,27 +1,50 @@
 
-.board {
-    width: 300px;
-}
+
+
 
 .cell {
-
     width: 100px;
     height: 100px;
     cursor: pointer;
     font-size: 4rem;
-    transition: all .07s ease, scale .2s linear;
-    border: .2rem solid var(--gray);
+    transition: all .07s ease;
+    border: .2rem solid var(--white);
 }
 
-.cell:hover {
-    transform: scale(1.05);
+.board {
+    width: calc(100px * 3);
 }
+
+
 
 .cell.cell-winner {
 
     color: var(--green);
 }
 
+
+.board > .row:nth-child(1) > .cell {
+
+    border-top: none;
+}
+
+.row > .cell:nth-child(1) {
+
+    border-left: none;
+
+}
+
+.row > .cell:nth-child(3) {
+
+    border-right: none;
+
+}
+
+
+.board > .row:nth-child(3) > .cell {
+
+    border-bottom: none;
+}
 
 @media all and (min-width: 1199px) {
 

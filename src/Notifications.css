@@ -1,0 +1,19 @@
+.alerts-wrapper {
+    height: 5rem;
+}
+
+.row-alerts {
+    text-align: center;
+    width: 300px;
+    font-weight: 600;
+    text-transform: capitalize;
+    transition: transform .3s ease-in-out;
+}
+
+.row-alerts.show {
+    transform: translateY(0);
+}
+
+.row-alerts.hide {
+    transform: translateY(-1000px);
+}
