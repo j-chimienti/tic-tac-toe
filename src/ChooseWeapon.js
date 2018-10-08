@@ -31,7 +31,7 @@ export class ChooseWeapon extends React.Component {
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Choose Weapon</h5>
+                            <h5 className="modal-title text-dark">Choose Weapon</h5>
                         </div>
                         <div className="modal-body">
                             <div className={'px-1 row d-flex justify-content-center align-items-center'}>
